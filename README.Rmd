@@ -1,0 +1,303 @@
+---
+title: 'Math 50 Fall 2017, Homework #4'
+output: rmarkdown::github_document
+By: Aadil Islam
+---
+
+__NOTE: For your homework download and use the template__ (https://math.dartmouth.edu/~m50f17/HW4.Rmd)
+
+__Read the green comments in the rmd file to see where your answers should go.__
+
+## Question-1 (Sample)
+- Read Example 3.1 Delivery Time Data. 
+
+### Part (a) 
+- Graphics can be very useful in analyzing the data. Plot two useful visualization of the data. First plot three dimensional scatterplot of delivery time data. Then plot scatterplot matrix (which is an array of 2D plots where each plot is a scatter diagram between two variables). 
+
+```{r}
+# Loading the data
+delivery <- read.table("https://math.dartmouth.edu/~m50f17/delivery.csv", header = TRUE)
+plot(delivery)
+x1Cases <- delivery$Cases
+x2Distance <- delivery$Distance
+yTime <- delivery$Time
+
+# 3D scatter diagram  
+library("plot3D")
+library("scatterplot3d")
+sc1 <- scatterplot3d(x1Cases, x2Distance, yTime, pch=17 , type = 'p', angle = 15 , highlight.3d = T ) # Plot scatterplot matrix
+plot(delivery[,-1])
+```
+
+(b) Fit a regression model for the reduced model relating delivery time to number of cases. Plot the joint confidence region of the coefficients (slope and intercept). Also add a point to the plot to show the estimated slope and intercept. 
+
+```{r}
+library(ellipse)
+reducedFit <- lm(Time ~ x1Cases, data = delivery)
+plot(ellipse(reducedFit), type = "l", xlab = "Intercept", ylab = "Slope", main = "Joint Confidence Region")
+points (reducedFit$coeff[[1]] , reducedFit$coeff[[2]] )
+```
+
+(c) Calculate the extra sum of squares due to the regressor variable Distance. 
+
+```{r}
+fullFit <- lm(Time ~ Cases + Distance, data = delivery)
+reducedSSR <- sum((predict(reducedFit) - mean(yTime))^2)
+fullSSR <- sum((predict(fullFit) - mean(yTime))^2)
+```
+
+Extra sum of squares due to distance: `r fullSSR - reducedSSR`
+
+## Question-2
+- Load the kinematic viscosity data (explained in Problem 3.14 and table B-10 in the book) at https://math.dartmouth.edu/~m50f17/kinematic.csv  
+- Solve the parts (a) to (e) of the Problem 3.14 and use $\alpha=0.05$. In addition, do the following.  
+
+### Part (a)
+
+```{r}
+kv_data<-read.table("https://math.dartmouth.edu/~m50f17/kinematic.csv", header=T, sep=",")
+y = kv_data$y
+x1 = kv_data$x1
+x2 = kv_data$x2
+regression_x1x2 = lm(y ~ x1 + x2, data = kv_data)
+```
+
+$\beta_0$: `r regression_x1x2$coeff[[1]]`
+
+$\beta_1$: `r regression_x1x2$coeff[[2]]`
+
+$\beta_2$: `r regression_x1x2$coeff[[3]]`
+
+### Part (b)
+
+```{r}
+n = length(x1)
+k = 2
+SSr = sum((predict(regression_x1x2) - mean(y))^2)
+SSres = sum((y - predict(regression_x1x2))^2)
+f_stat = (SSr/k)/(SSres/(n-(k+1)))
+f_val = qf(0.95, k,n-(k+1))
+```
+
+f_stat: `r f_stat`
+
+f_val: `r f_val`
+
+Reject null hyp, conclude at 5% level that at least one of temperature and ratio of solvents linearly predicts kinematic viscosity.
+
+### Part (c)
+
+```{r}
+c = rep(1,length(x1))
+x = cbind(c,x1,x2)
+save = t(x) %*% x
+cjj = solve((t(x) %*% x))
+t_stat_1 = abs(regression_x1x2$coeff[[2]]/(SSres/(n-(k+1))*cjj[2,2])^0.5)
+t_stat_2 = abs(regression_x1x2$coeff[[3]]/(SSres/(n-(k+1))*cjj[3,3])^0.5)
+t_val = qt(0.975,n-(k+1))
+```
+
+$\beta_1$ t_stat: `r t_stat_1`
+
+t_value: `r t_val`
+
+t_val: `r regression_x1x2$coeff[[3]]`
+
+Reject null hyp, conclude at 5% level that ratio of solvents alone linearly predicts kinematic viscosity.
+
+$\beta_2$ t_stat: `r t_stat_2`
+
+t_value: `r t_val`
+
+t_val: `r regression_x1x2$coeff[[3]]`
+
+Reject null hyp, conclude at 5% level that temperature alone linearly predicts kinematic viscosity.
+
+### Part (d)
+
+```{r}
+SSt = sum((y - mean(y))^2)
+r_sq = SSr / SSt
+r_sq_adj = 1 - (SSres / (n-(k+1)))/(SSt / (n-1))
+```
+
+R_sq_multiple: `r r_sq`
+
+R_sq_adj_multiple: `r r_sq_adj`
+
+```{r}
+regression_x2 = lm(y ~ x2, data = kv_data)
+k = 1
+SSr_temp = sum((predict(regression_x2) - mean(y))^2)
+SSres_temp = sum((y - predict(regression_x2))^2)
+r_sq_temp = SSr_temp / SSt
+r_sq_adj_temp = 1 - (SSres_temp / (n-(k+1)))/(SSt / (n-1))
+```
+
+R_sq_simple: `r r_sq_temp`
+
+R_sq_adj_simple: `r r_sq_adj_temp`
+
+The multiple regression model clearly fits the data better than the simple regression model does when comparing their respective R_sq and R_sq_adj values, indicating the ratio of the solvents matters to the prediction of viscosity.
+
+### Part (e)
+
+```{r}
+Sxx = sum((x2-mean(x2))^2)
+lower_simple = regression_x2$coeff[[2]] - qt(0.995,n-(k+1))*(SSres_temp/(n-(k+1))/Sxx)^0.5
+upper_simple = regression_x2$coeff[[2]] + qt(0.995,n-(k+1))*(SSres_temp/(n-(k+1))/Sxx)^0.5
+k = 2
+lower_multiple = regression_x1x2$coeff[[3]] - qt(0.995,n-(k+1))*(SSres/(n-(k+1))*cjj[3,3])^0.5
+upper_multiple = regression_x1x2$coeff[[3]] + qt(0.995,n-(k+1))*(SSres/(n-(k+1))*cjj[3,3])^0.5
+```
+
+temp_coeff_conf_int_simple: (`r lower_simple`, `r upper_simple`)
+
+temp_coeff_conf_int_multiple: (`r lower_multiple`, `r upper_multiple`)
+
+The confidence interval for temperature coefficient in the multiple linear regression model is slightly narrower and therefore more concise than the interval from the simple linear regression model.
+
+### Part (f)
+- Calculate the extra sum of squares due to the regressor variable x1. 
+
+```{r}
+SSr = sum((predict(regression_x1x2) - mean(y))^2)
+SSr_b2 = sum((predict(regression_x2)-mean(y))^2)
+SSr_b1b2 = SSr-SSr_b2
+```
+
+extra_sum_squares_x1: `r SSr_b1b2`
+
+### Part (g)
+- Plot scatterplot matrix and scatter diagram in order to visualize the data. Can you make any connection between the visualization of data and the results you found in previous parts? Discuss. 
+
+```{r}
+library("plot3D")
+library("scatterplot3d")
+sc1 <- scatterplot3d(x1, x2, y, pch=17 , type = 'p', angle = 15 , highlight.3d = T)
+plot(kv_data[,-1])
+plot(kv_data)
+```
+
+Clearly there exists a linear relationship between viscosity and temperature/ratio of solvents, however the relationship does not appear to be line-based. The model likely needs an interaction term because the 3d plot is not planar (there is curvature, non-constant slope of the graph). Thus the multiple linear regression model may be a better fit than the simple linear regression model as we found before, but the former still may not be the best fit.
+
+## Question-3
+- Load the Mortality data (explained in Problem 3.15 and table B-15 in the book) at 
+- https://math.dartmouth.edu/~m50f17/mortality.csv
+- Solve the parts (a) to (e) of the Problem 3.15  (use $\alpha=0.05$ if you need). In addition do the following.  
+
+### Part (a)
+```{r}
+mort_data<-read.table("https://math.dartmouth.edu/~m50f17/mortality.csv",header=T)
+y = mort_data$MORT
+x1 = mort_data$PRECIP
+x2 = mort_data$EDUC
+x3 = mort_data$NONWHITE
+x4 = mort_data$NOX
+x5 = mort_data$SO2
+regression = lm(y ~ x1+x2+x3+x4+x5, data = mort_data)
+```
+
+$\beta_0$: `r regression$coeff[[1]]`,
+
+$\beta_1$: `r regression$coeff[[2]]`
+
+$\beta_2$: `r regression$coeff[[3]]`
+
+$\beta_3$: `r regression$coeff[[4]]`
+
+$\beta_4$: `r regression$coeff[[5]]`
+
+$\beta_5$: `r regression$coeff[[6]]`
+
+### Part (b)
+
+```{r}
+n = length(x1)
+k = 5
+SSr = sum((predict(regression)-mean(y))^2)
+SSres = sum((y-predict(regression))^2)
+f_stat = (SSr/k)/(SSres/(n-(k+1)))
+f_val = qf(0.95,k,n-(k+1))
+```
+
+f_stat: `r f_stat`
+
+f_val: `r f_val`
+
+Reject null hyp, conclude at 5% level that at least one of precip, educ, nonwhite, NOX, and SO2 predicts mortality.
+
+### Part (c)
+
+```{r}
+x = cbind(c,x1,x2,x3,x4,x5)
+cjj = solve((t(x) %*% x))
+t_stat_b1 = abs(regression$coeff[[2]]/(SSres/(n-(k+1)) * cjj[2,2])^0.5)
+t_stat_b2 = abs(regression$coeff[[3]]/(SSres/(n-(k+1)) * cjj[3,3])^0.5)
+t_stat_b3 = abs(regression$coeff[[4]]/(SSres/(n-(k+1)) * cjj[4,4])^0.5)
+t_stat_b4 = abs(regression$coeff[[5]]/(SSres/(n-(k+1)) * cjj[5,5])^0.5)
+t_stat_b5 = abs(regression$coeff[[6]]/(SSres/(n-(k+1)) * cjj[6,6])^0.5)
+t_val = qt(0.975,n-(k+1))
+```
+
+t_stat: `r t_stat_b1`, t_value: `r t_val`, reject null hyp
+
+t_stat: `r t_stat_b2`, t_value: `r t_val`, reject null hyp
+
+t_stat: `r t_stat_b3`, t_value: `r t_val`, reject null hyp
+
+t_stat: `r t_stat_b4`, t_value: `r t_val`, fail to reject null hyp
+
+t_stat: `r t_stat_b5`, t_value: `r t_val`, reject null hyp
+
+Conclude at 5% level that Precip, Educ, Nonwhite, and SO2 predict Mortality. Conclude at 5% level that NOX does not predict Mortality at the 5% level.
+
+### Part (d)
+
+```{r}
+SSt = sum((y-mean(y))^2)
+r_sq = SSr/SSt
+r_sq_adj = 1 - ((SSres)/(n-(k+1)))/((SSt)/(n-1))
+```
+
+$R^2$: `r r_sq`, $R^2_{adj}$: `r r_sq_adj`
+
+### Part (e)
+
+```{r}
+upper = regression$coeff[[6]] + qt(0.975,n-(k+1))*(SSres/(n-(k+1)) * cjj[6,6])^0.5
+lower = regression$coeff[[6]] - qt(0.975,n-(k+1))*(SSres/(n-(k+1)) * cjj[6,6])^0.5
+```
+
+SO2_coeff_conf_int: (`r lower`, `r upper`)
+
+### Part (f) 
+- You want to quantify the contribution of regressors Educ,NOX,SO2 together to the model. Choose $\alpha=0.01$. Using F test (the partial F test given in equation 3.35) comment on this contribution to the model. (Note the different $\alpha$ value).  
+
+```{r}
+reg_reduced = lm(y~x1+x3, data = mort_data)
+SSr_full = sum((predict(regression)-mean(y))^2)
+SSr_reduced = sum((predict(reg_reduced)-mean(y))^2)
+f_stat = ((SSr_full - SSr_reduced)/3)/(SSres/(n-(k+1)))
+k = 5
+r = 3
+f_val = qf(0.99,3,n-(k+1))
+```
+
+f_stat: `r f_stat`, f_val: `r f_val`, Reject null hyp, conclude at 1% level that at least one of education, NOX, and SO4 linearly predict mortality, given all other regressors are already in the model.
+
+### Part (g) 
+- Consider the individual contribution test you calculated in part (c). Now choose the two regressor variables with the lowest t-statistic values. Using partial F test comment on their contribution to the model. Use $\alpha=0.01$.  
+
+```{r}
+k = 5
+reg_reduced = lm(y~x2+x3+x5, data = mort_data)
+SSr_reduced = sum((predict(reg_reduced)-mean(y))^2)
+f_stat = ((SSr_full - SSr_reduced)/2)/(SSres/(n-(k+1)))
+r = 2
+f_val = qf(0.99,r,n-(k+1))
+```
+
+We use x1 and x4.
+
+f_stat: `r f_stat`, f_val: `r f_val`, Fail to reject null hyp, conclude that together precip and NOX do not linearly predict mortality, given all other regressors are already in the model.
