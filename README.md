@@ -25,7 +25,7 @@ delivery <- read.table("https://math.dartmouth.edu/~m50f17/delivery.csv", header
 plot(delivery)
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ``` r
 x1Cases <- delivery$Cases
@@ -38,13 +38,13 @@ library("scatterplot3d")
 sc1 <- scatterplot3d(x1Cases, x2Distance, yTime, pch=17 , type = 'p', angle = 15 , highlight.3d = T ) # Plot scatterplot matrix
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
 
 ``` r
 plot(delivery[,-1])
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
 
 2.  Fit a regression model for the reduced model relating delivery time
     to number of cases. Plot the joint confidence region of the
@@ -68,7 +68,7 @@ plot(ellipse(reducedFit), type = "l", xlab = "Intercept", ylab = "Slope", main =
 points (reducedFit$coeff[[1]] , reducedFit$coeff[[2]] )
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 3.  Calculate the extra sum of squares due to the regressor variable
     Distance.
@@ -226,19 +226,19 @@ library("scatterplot3d")
 sc1 <- scatterplot3d(x1, x2, y, pch=17 , type = 'p', angle = 15 , highlight.3d = T)
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 plot(kv_data[,-1])
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
 
 ``` r
 plot(kv_data)
 ```
 
-![](viscosityDataAnalysis_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
 
 Clearly there exists a linear relationship between viscosity and
 temperature/ratio of solvents, however the relationship does not appear
