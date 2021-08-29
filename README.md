@@ -1,23 +1,13 @@
 Math 50 Fall 2017, Homework \#4
 ================
 
-**NOTE: For your homework download and use the template**
-(<https://math.dartmouth.edu/~m50f17/HW4.Rmd>)
-
-**Read the green comments in the rmd file to see where your answers
-should go.**
-
 ## Question-1 (Sample)
 
 -   Read Example 3.1 Delivery Time Data.
 
 ### Part (a)
 
--   Graphics can be very useful in analyzing the data. Plot two useful
-    visualization of the data. First plot three dimensional scatterplot
-    of delivery time data. Then plot scatterplot matrix (which is an
-    array of 2D plots where each plot is a scatter diagram between two
-    variables).
+-   Graphics can be very useful in analyzing the data. Plot two useful visualization of the data. First plot three dimensional scatterplot of delivery time data. Then plot scatterplot matrix (which is an array of 2D plots where each plot is a scatter diagram between two variables).
 
 ``` r
 # Loading the data
@@ -46,16 +36,12 @@ plot(delivery[,-1])
 
 ![](README_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
 
-2.  Fit a regression model for the reduced model relating delivery time
-    to number of cases. Plot the joint confidence region of the
-    coefficients (slope and intercept). Also add a point to the plot to
-    show the estimated slope and intercept.
+2.  Fit a regression model for the reduced model relating delivery time to number of cases. Plot the joint confidence region of the coefficients (slope and intercept). Also add a point to the plot to show the estimated slope and intercept.
 
 ``` r
 library(ellipse)
 ```
 
-    ## 
     ## Attaching package: 'ellipse'
 
     ## The following object is masked from 'package:graphics':
@@ -70,8 +56,7 @@ points (reducedFit$coeff[[1]] , reducedFit$coeff[[2]] )
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-3.  Calculate the extra sum of squares due to the regressor variable
-    Distance.
+3.  Calculate the extra sum of squares due to the regressor variable Distance.
 
 ``` r
 fullFit <- lm(Time ~ Cases + Distance, data = delivery)
@@ -83,11 +68,8 @@ Extra sum of squares due to distance: 168.4021256
 
 ## Question-2
 
--   Load the kinematic viscosity data (explained in Problem 3.14 and
-    table B-10 in the book) at
-    <https://math.dartmouth.edu/~m50f17/kinematic.csv>  
--   Solve the parts (a) to (e) of the Problem 3.14 and use *α* = 0.05.
-    In addition, do the following.
+-   Load the kinematic viscosity data (explained in Problem 3.14 and table B-10 in the book) at <https://math.dartmouth.edu/~m50f17/kinematic.csv>  
+-   Solve the parts (a) to (e) of the Problem 3.14 and use *α* = 0.05. In addition, do the following.
 
 ### Part (a)
 
@@ -116,12 +98,11 @@ f_stat = (SSr/k)/(SSres/(n-(k+1)))
 f_val = qf(0.95, k,n-(k+1))
 ```
 
-f\_stat: 85.461685
+*F*<sub>stat</sub>: 85.461685
 
-f\_val: 3.2519238
+*F*<sub>val</sub>: 3.2519238
 
-Reject null hyp, conclude at 5% level that at least one of temperature
-and ratio of solvents linearly predicts kinematic viscosity.
+Reject null hyp, conclude at 5% level that at least one of temperature and ratio of solvents linearly predicts kinematic viscosity.
 
 ### Part (c)
 
@@ -135,23 +116,21 @@ t_stat_2 = abs(regression_x1x2$coeff[[3]]/(SSres/(n-(k+1))*cjj[3,3])^0.5)
 t_val = qt(0.975,n-(k+1))
 ```
 
-*β*<sub>1</sub> t\_stat: 7.146521
+*β*<sub>1</sub> *t*<sub>stat</sub>: 7.146521
 
-t\_value: 2.0261925
+*t*\_value: 2.0261925
 
-t\_val: -0.0156288
+*t*<sub>val</sub>: -0.0156288
 
-Reject null hyp, conclude at 5% level that ratio of solvents alone
-linearly predicts kinematic viscosity.
+Reject null hyp, conclude at 5% level that ratio of solvents alone linearly predicts kinematic viscosity.
 
-*β*<sub>2</sub> t\_stat: 10.9476302
+*β*<sub>2</sub> *t*<sub>stat</sub>: 10.9476302
 
-t\_value: 2.0261925
+*t*<sub>value</sub>: 2.0261925
 
-t\_val: -0.0156288
+*t*<sub>val</sub>: -0.0156288
 
-Reject null hyp, conclude at 5% level that temperature alone linearly
-predicts kinematic viscosity.
+Reject null hyp, conclude at 5% level that temperature alone linearly predicts kinematic viscosity.
 
 ### Part (d)
 
@@ -161,9 +140,9 @@ r_sq = SSr / SSt
 r_sq_adj = 1 - (SSres / (n-(k+1)))/(SSt / (n-1))
 ```
 
-R\_sq\_multiple: 0.8220498
+*R*<sub>sq multiple</sub>: 0.8220498
 
-R\_sq\_adj\_multiple: 0.8124309
+*R*<sub>sq adj multiple</sub>: 0.8124309
 
 ``` r
 regression_x2 = lm(y ~ x2, data = kv_data)
@@ -174,14 +153,11 @@ r_sq_temp = SSr_temp / SSt
 r_sq_adj_temp = 1 - (SSres_temp / (n-(k+1)))/(SSt / (n-1))
 ```
 
-R\_sq\_simple: 0.5764172
+*R*<sub>sq simple</sub>: 0.5764172
 
-R\_sq\_adj\_simple: 0.5652703
+*R*<sub>sq adj simple</sub>: 0.5652703
 
-The multiple regression model clearly fits the data better than the
-simple regression model does when comparing their respective R\_sq and
-R\_sq\_adj values, indicating the ratio of the solvents matters to the
-prediction of viscosity.
+The multiple regression model clearly fits the data better than the simple regression model does when comparing their respective *R*<sub>sq</sub> and *R*<sub>sq adj</sub> values, indicating the ratio of the solvents matters to the prediction of viscosity.
 
 ### Part (e)
 
@@ -194,17 +170,15 @@ lower_multiple = regression_x1x2$coeff[[3]] - qt(0.995,n-(k+1))*(SSres/(n-(k+1))
 upper_multiple = regression_x1x2$coeff[[3]] + qt(0.995,n-(k+1))*(SSres/(n-(k+1))*cjj[3,3])^0.5
 ```
 
-temp\_coeff\_conf\_int\_simple: (-0.0215221, -0.0097356)
+*temp*<sub>coeff conf int simple</sub>: (-0.0215221, -0.0097356)
 
-temp\_coeff\_conf\_int\_multiple: (-0.0195054, -0.0117523)
+*temp*<sub>coeff conf int multiple</sub>: (-0.0195054, -0.0117523)
 
-The confidence interval for temperature coefficient in the multiple
-linear regression model is slightly narrower and therefore more concise
-than the interval from the simple linear regression model.
+The confidence interval for temperature coefficient in the multiple linear regression model is slightly narrower and therefore more concise than the interval from the simple linear regression model.
 
 ### Part (f)
 
--   Calculate the extra sum of squares due to the regressor variable x1.
+-   Calculate the extra sum of squares due to the regressor variable x<sub>1</sub>.
 
 ``` r
 SSr = sum((predict(regression_x1x2) - mean(y))^2)
@@ -212,13 +186,11 @@ SSr_b2 = sum((predict(regression_x2)-mean(y))^2)
 SSr_b1b2 = SSr-SSr_b2
 ```
 
-extra\_sum\_squares\_x1: 3.4349231
+extra sum squares x<sub>1</sub>: 3.4349231
 
 ### Part (g)
 
--   Plot scatterplot matrix and scatter diagram in order to visualize
-    the data. Can you make any connection between the visualization of
-    data and the results you found in previous parts? Discuss.
+-   Plot scatterplot matrix and scatter diagram in order to visualize the data. Can you make any connection between the visualization of data and the results you found in previous parts? Discuss.
 
 ``` r
 library("plot3D")
@@ -240,21 +212,13 @@ plot(kv_data)
 
 ![](README_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->
 
-Clearly there exists a linear relationship between viscosity and
-temperature/ratio of solvents, however the relationship does not appear
-to be line-based. The model likely needs an interaction term because the
-3d plot is not planar (there is curvature, non-constant slope of the
-graph). Thus the multiple linear regression model may be a better fit
-than the simple linear regression model as we found before, but the
-former still may not be the best fit.
+Clearly there exists a linear relationship between viscosity and temperature/ratio of solvents, however the relationship does not appear to be line-based. The model likely needs an interaction term because the 3d plot is not planar (there is curvature, non-constant slope of the graph). Thus the multiple linear regression model may be a better fit than the simple linear regression model as we found before, but the former still may not be the best fit.
 
 ## Question-3
 
--   Load the Mortality data (explained in Problem 3.15 and table B-15 in
-    the book) at
+-   Load the Mortality data (explained in Problem 3.15 and table B-15 in the book) at
 -   <https://math.dartmouth.edu/~m50f17/mortality.csv>
--   Solve the parts (a) to (e) of the Problem 3.15 (use *α* = 0.05 if
-    you need). In addition do the following.
+-   Solve the parts (a) to (e) of the Problem 3.15 (use *α* = 0.05 if you need). In addition do the following.
 
 ### Part (a)
 
@@ -292,12 +256,11 @@ f_stat = (SSr/k)/(SSres/(n-(k+1)))
 f_val = qf(0.95,k,n-(k+1))
 ```
 
-f\_stat: 22.3862387
+*F*<sub>stat</sub>: 22.3862387
 
-f\_val: 2.3860699
+*F*<sub>val</sub>: 2.3860699
 
-Reject null hyp, conclude at 5% level that at least one of precip, educ,
-nonwhite, NOX, and SO2 predicts mortality.
+Reject null hyp, conclude at 5% level that at least one of precip, educ, nonwhite, NOX, and SO2 predicts mortality.
 
 ### Part (c)
 
@@ -318,19 +281,17 @@ t_stat_b5 = abs(regression$coeff[[6]]/(SSres/(n-(k+1)) * cjj[6,6])^0.5)
 t_val = qt(0.975,n-(k+1))
 ```
 
-t\_stat: 2.0421598, t\_value: 2.0048793, reject null hyp
+*t*<sub>stat</sub>: 2.0421598, *t*<sub>value</sub>: 2.0048793, reject null hyp
 
-t\_stat: 2.1062201, t\_value: 2.0048793, reject null hyp
+*t*<sub>stat</sub>: 2.1062201, *t*<sub>value</sub>: 2.0048793, reject null hyp
 
-t\_stat: 5.1406827, t\_value: 2.0048793, reject null hyp
+*t*<sub>stat</sub>: 5.1406827, *t*<sub>value</sub>: 2.0048793, reject null hyp
 
-t\_stat: 0.7996351, t\_value: 2.0048793, fail to reject null hyp
+*t*<sub>stat</sub>: 0.7996351, *t*<sub>value</sub>: 2.0048793, fail to reject null hyp
 
-t\_stat: 3.9047402, t\_value: 2.0048793, reject null hyp
+*t*<sub>stat</sub>: 3.9047402, *t*<sub>value</sub>: 2.0048793, reject null hyp
 
-Conclude at 5% level that Precip, Educ, Nonwhite, and SO2 predict
-Mortality. Conclude at 5% level that NOX does not predict Mortality at
-the 5% level.
+Conclude at 5% level that Precip, Educ, Nonwhite, and SO2 predict Mortality. Conclude at 5% level that NOX does not predict Mortality at the 5% level.
 
 ### Part (d)
 
@@ -354,10 +315,7 @@ SO2\_coeff\_conf\_int: (0.1728118, 0.5375405)
 
 ### Part (f)
 
--   You want to quantify the contribution of regressors Educ,NOX,SO2
-    together to the model. Choose *α* = 0.01. Using F test (the partial
-    F test given in equation 3.35) comment on this contribution to the
-    model. (Note the different *α* value).
+-   You want to quantify the contribution of regressors Educ, NOX, SO2 together to the model. Choose *α* = 0.01. Using F-test (the partial F-test given in equation 3.35) comment on this contribution to the model. (Note the different *α* value).
 
 ``` r
 reg_reduced = lm(y~x1+x3, data = mort_data)
@@ -369,16 +327,11 @@ r = 3
 f_val = qf(0.99,3,n-(k+1))
 ```
 
-f\_stat: 10.0446028, f\_val: 4.1665007, Reject null hyp, conclude at 1%
-level that at least one of education, NOX, and SO4 linearly predict
-mortality, given all other regressors are already in the model.
+*F*<sub>stat</sub>: 10.0446028, *F*<sub>val</sub>: 4.1665007, Reject null hyp, conclude at 1% level that at least one of education, NOX, and SO4 linearly predict mortality, given all other regressors are already in the model.
 
 ### Part (g)
 
--   Consider the individual contribution test you calculated in part
-    (c). Now choose the two regressor variables with the lowest
-    t-statistic values. Using partial F test comment on their
-    contribution to the model. Use *α* = 0.01.
+-   Consider the individual contribution test you calculated in part (c). Now choose the two regressor variables with the lowest t-statistic values. Using partial F-test comment on their contribution to the model. Use *α* = 0.01.
 
 ``` r
 k = 5
@@ -389,8 +342,8 @@ r = 2
 f_val = qf(0.99,r,n-(k+1))
 ```
 
-We use x1 and x4.
+We use x<sub>1</sub> and x<sub>4</sub>.
 
-f\_stat: 3.7138214, f\_val: 5.0212173, Fail to reject null hyp, conclude
+*F*<sub>stat</sub>: 3.7138214, *F*<sub>val</sub>: 5.0212173, Fail to reject null hyp, conclude
 that together precip and NOX do not linearly predict mortality, given
 all other regressors are already in the model.
